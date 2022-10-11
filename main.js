@@ -1,6 +1,6 @@
 var http = require('http');
 var fs = require('fs');
-var url = require('url');
+var url = require('url'); //url변수를 통해 url이란 모듈을 사용할거야!
 
 var app = http.createServer(function(request,response){
     var _url = request.url;
@@ -8,8 +8,8 @@ var app = http.createServer(function(request,response){
     var title = queryData.id;
     console.log(queryData.id);
     //console.log(_url);
-    if(_url == '/'){
-        //_url = '/index.html';
+    if(_url == '/'){ //최상위 url : localhost:3000
+        // _url = '/index.html';
         title = 'Welcome';
     }
     if(_url == '/favicon.ico'){
@@ -17,9 +17,11 @@ var app = http.createServer(function(request,response){
         response.end();
         return;
     }
+
     response.writeHead(200);
     //console.log(__dirname+url);
     //template변수는 강의 16주차에 있음!
+    fs.readFile(`data/${queryData.id}`, 'utf8', function(err, description){
     var template = `
     <!doctype html>
     <html>
@@ -35,15 +37,14 @@ var app = http.createServer(function(request,response){
             <li><a href="/?id=JavaScript">JavaScript</a></li>
         </ol>
         <h2>${title}</h2>
-        <p><a href="https://www.w3.org/TR/html5/" target="_blank" title="html5 speicification">Hypertext Markup Language (HTML)</a> is the standard markup language for <strong>creating <u>web</u> pages</strong> and web applications.Web browsers receive HTML documents from a web server or from local storage and render them into multimedia web pages. HTML describes the structure of a web page semantically and originally included cues for the appearance of the document.
-        <img src="coding.jpg" width="100%">
-        </p><p style="margin-top:45px;">HTML elements are the building blocks of HTML pages. With HTML constructs, images and other objects, such as interactive forms, may be embedded into the rendered page. It provides a means to create structured documents by denoting structural semantics for text such as headings, paragraphs, lists, links, quotes and other items. HTML elements are delineated by tags, written using angle brackets.
-        </p>
+        <p>${description}</p>
     </body>
     </html>
-    `
-
+    `;
     //사용자에게 보여줄 내용 response.end
     response.end(template);
+    })
+    
 });
+
 app.listen(3000);

@@ -8,8 +8,11 @@ var letter1 = 'coffee ' + tem +'\ncold brew iced only \ngranita \ngelato \ntea '
 var letter2 = `coffee ${tem} 
 
 cold brew iced only 
+
 granita 
+
 gelato 
+
 tea ${tem}`;
 
 console.log(letter2);
