@@ -4,47 +4,86 @@ var url = require('url'); //url변수를 통해 url이란 모듈을 사용할거
 
 var app = http.createServer(function(request,response){
     var _url = request.url;
-    var queryData = url.parse(_url, true).query;
+    var queryData = url.parse(_url, true).query; //_url정보 중에서 query값만 보여주기
+    var pathname = url.parse(_url, true).pathname;
     var title = queryData.id;
-    console.log(queryData.id);
-    //console.log(_url);
-    if(_url == '/'){ //최상위 url : localhost:3000
-        // _url = '/index.html';
-        title = 'Welcome';
-    }
-    if(_url == '/favicon.ico'){
-        response.writeHead(404);
-        response.end();
-        return;
+
+
+    if(pathname==='/'){ //pathname으로는 home과 각각 페이지들을 구분 불가 (모두 다 /니까)
+
+        if(title === undefined){
+            title = "Welcome";
+            description = "Hello! Node.js";
+            var template = `
+            <!doctype html>
+            <html>
+            <head>
+                <title>WEB1 - ${title}</title>
+                <meta charset="utf-8">
+            </head>
+            <body>
+                <h1><a href="/">WEB</a></h1>
+                <ol>
+                    <li><a href="/?id=HTML">HTML</a></li>
+                    <li><a href="/?id=CSS">CSS</a></li>
+                    <li><a href="/?id=JavaScript">JavaScript</a></li>
+                </ol>
+                <h2>${title}</h2>
+                <p>${description}</p>
+            </body>
+            </html>
+            `;
+            response.writeHead(200); //성공
+            //사용자에게 보여줄 내용 response.end
+            response.end(template);
+        }
+        else{
+        fs.readFile(`data/${queryData.id}`, 'utf8', function(err, description){
+            var template = `
+            <!doctype html>
+            <html>
+            <head>
+                <title>WEB1 - ${title}</title>
+                <meta charset="utf-8">
+            </head>
+            <body>
+                <h1><a href="/">WEB</a></h1>
+                <ol>
+                    <li><a href="/?id=HTML">HTML</a></li>
+                    <li><a href="/?id=CSS">CSS</a></li>
+                    <li><a href="/?id=JavaScript">JavaScript</a></li>
+                </ol>
+                <h2>${title}</h2>
+                <p>${description}</p>
+            </body>
+            </html>
+            `;
+            response.writeHead(200); //성공
+            //사용자에게 보여줄 내용 response.end
+            response.end(template);
+            })     
+        }
+
+    }else{
+        response.writeHead(404); //찾을 수 없다
+        response.end('NOT FOUND');
     }
 
-    response.writeHead(200);
+    // console.log(queryData);
+    // console.log(url.parse(_url, true)) //_url정보 전체
+    // console.log(queryData.id);
+    //console.log(_url);
+    // if(_url == '/'){ //최상위 url : localhost:3000
+    //     // _url = '/index.html';
+    //     title = 'Welcome';
+    // }
+    // if(_url == '/favicon.ico'){
+    //     return response.writeHead(404);
+    // }
+
+    
     //console.log(__dirname+url);
     //template변수는 강의 16주차에 있음!
-    fs.readFile(`data/${queryData.id}`, 'utf8', function(err, description){
-    var template = `
-    <!doctype html>
-    <html>
-    <head>
-        <title>WEB1 - ${title}</title>
-        <meta charset="utf-8">
-    </head>
-    <body>
-        <h1><a href="/">WEB</a></h1>
-        <ol>
-            <li><a href="/?id=HTML">HTML</a></li>
-            <li><a href="/?id=CSS">CSS</a></li>
-            <li><a href="/?id=JavaScript">JavaScript</a></li>
-        </ol>
-        <h2>${title}</h2>
-        <p>${description}</p>
-    </body>
-    </html>
-    `;
-    //사용자에게 보여줄 내용 response.end
-    response.end(template);
-    })
     
 });
-
 app.listen(3000);
