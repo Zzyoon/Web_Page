@@ -9,36 +9,65 @@ var app = http.createServer(function(request,response){
     var title = queryData.id;
 
 
-    if(pathname==='/'){ //pathname으로는 home과 각각 페이지들을 구분 불가 (모두 다 /니까)
+    if(pathname === '/'){ //pathname으로는 home과 각각 페이지들을 구분 불가 (모두 다 /니까)
 
         if(title === undefined){
-            title = "Welcome";
-            description = "Hello! Node.js";
-            var template = `
-            <!doctype html>
-            <html>
-            <head>
-                <title>WEB1 - ${title}</title>
-                <meta charset="utf-8">
-            </head>
-            <body>
-                <h1><a href="/">WEB</a></h1>
-                <ol>
+            fs.readdir('./data', function(error, filelist){
+                title = "Welcome";
+                description = "Hello! Node.js";
+
+                /*
+                var list = `
+                    <ol>
                     <li><a href="/?id=HTML">HTML</a></li>
                     <li><a href="/?id=CSS">CSS</a></li>
                     <li><a href="/?id=JavaScript">JavaScript</a></li>
-                </ol>
-                <h2>${title}</h2>
-                <p>${description}</p>
-            </body>
-            </html>
-            `;
-            response.writeHead(200); //성공
-            //사용자에게 보여줄 내용 response.end
-            response.end(template);
+                    </ol>`;
+                */
+
+                var list = '<ul>';
+                var i = 0;
+                while(i < filelist.length){
+                    list = list + `<li><a href="/?id=${filelist[i]}">${filelist[i]}</a></li>`
+                    i++;
+                }
+                list = list + '</ul>';
+
+                var template = `
+                <!doctype html>
+                <html>
+                <head>
+                    <title>WEB1 - ${title}</title>
+                    <meta charset="utf-8">
+                </head>
+                <body>
+                    <h1><a href="/">WEB</a></h1>
+                    ${list}
+                    <h2>${title}</h2>
+                    <p>${description}</p>
+                </body>
+                </html>
+                `;
+                response.writeHead(200); //성공
+                //사용자에게 보여줄 내용 response.end
+                response.end(template);
+            }) 
+            
         }
         else{
-        fs.readFile(`data/${queryData.id}`, 'utf8', function(err, description){
+            fs.readdir('./data', function(error, filelist){
+                title = "Welcome";
+                description = "Hello! Node.js";
+
+                var list = '<ul>';
+                var i = 0;
+                while(i < filelist.length){
+                    list = list + `<li><a href="/?id=${filelist[i]}">${filelist[i]}</a></li>`
+                    i++;
+                }
+                list = list + '</ul>';
+
+            fs.readFile(`data/${queryData.id}`, 'utf8', function(err, description){
             var template = `
             <!doctype html>
             <html>
@@ -48,11 +77,7 @@ var app = http.createServer(function(request,response){
             </head>
             <body>
                 <h1><a href="/">WEB</a></h1>
-                <ol>
-                    <li><a href="/?id=HTML">HTML</a></li>
-                    <li><a href="/?id=CSS">CSS</a></li>
-                    <li><a href="/?id=JavaScript">JavaScript</a></li>
-                </ol>
+                ${list}
                 <h2>${title}</h2>
                 <p>${description}</p>
             </body>
@@ -61,9 +86,9 @@ var app = http.createServer(function(request,response){
             response.writeHead(200); //성공
             //사용자에게 보여줄 내용 response.end
             response.end(template);
-            })     
-        }
-
+            });     
+        });
+    }
     }else{
         response.writeHead(404); //찾을 수 없다
         response.end('NOT FOUND');
