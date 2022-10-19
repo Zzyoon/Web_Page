@@ -24,7 +24,6 @@ var app = http.createServer(function(request,response){
                     <li><a href="/?id=JavaScript">JavaScript</a></li>
                     </ol>`;
                 */
-
                 var list = '<ul>';
                 var i = 0;
                 while(i < filelist.length){
@@ -68,6 +67,7 @@ var app = http.createServer(function(request,response){
                 list = list + '</ul>';
 
             fs.readFile(`data/${queryData.id}`, 'utf8', function(err, description){
+            var title = queryData.id;
             var template = `
             <!doctype html>
             <html>
