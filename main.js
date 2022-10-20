@@ -27,6 +27,7 @@ function templateList(filelist){
         i++;
     }
     list = list + '</ul>';
+    return list;
 }
 
 
@@ -43,23 +44,6 @@ var app = http.createServer(function(request,response){
                 var title = "Welcome";
                 var description = "Hello! Node.js";
 
-                /*
-                var list = `
-                    <ol>
-                    <li><a href="/?id=HTML">HTML</a></li>
-                    <li><a href="/?id=CSS">CSS</a></li>
-                    <li><a href="/?id=JavaScript">JavaScript</a></li>
-                    </ol>`;
-                
-                var list = '<ul>';
-                var i = 0;
-                while(i < filelist.length){
-                    list = list + `<li><a href="/?id=${filelist[i]}">${filelist[i]}</a></li>`
-                    i++;
-                }
-                list = list + '</ul>';
-                */
-
                 var list = templateList(filelist);
                 var template = templateHTML(title, list, `<h2>${title}</h2>${description}`);
                 response.writeHead(200); //성공
@@ -70,16 +54,6 @@ var app = http.createServer(function(request,response){
         }
         else{
             fs.readdir('./data', function(error, filelist){
-                
-                /*
-                var list = '<ul>';
-                var i = 0;
-                while(i < filelist.length){
-                    list = list + `<li><a href="/?id=${filelist[i]}">${filelist[i]}</a></li>`
-                    i++;
-                }
-                list = list + '</ul>';
-                */
             
             fs.readFile(`data/${queryData.id}`, 'utf8', function(err, description){
             var title = queryData.id;
@@ -96,22 +70,6 @@ var app = http.createServer(function(request,response){
         response.writeHead(404); //찾을 수 없다
         response.end('NOT FOUND');
     }
-
-    // console.log(queryData);
-    // console.log(url.parse(_url, true)) //_url정보 전체
-    // console.log(queryData.id);
-    //console.log(_url);
-    // if(_url == '/'){ //최상위 url : localhost:3000
-    //     // _url = '/index.html';
-    //     title = 'Welcome';
-    // }
-    // if(_url == '/favicon.ico'){
-    //     return response.writeHead(404);
-    // }
-
-    
-    //console.log(__dirname+url);
-    //template변수는 강의 16주차에 있음!
     
 });
 app.listen(3000);
