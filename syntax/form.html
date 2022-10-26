@@ -1,0 +1,15 @@
+<form action="http://localhost:3000/process_create" method="post">
+    <p><input type = "text" name="title"></p>
+    <p>
+        <textarea name="description"></textarea>
+    </p>
+    <p>
+        <input type = "submit">
+    </p>
+</form>
+
+<!--http://localhost:3000/process_create?title=title&description=describe-->
+<!--이렇게 뜨는데 데이터를 가져올떄는 쿼리스트링으로 가져오는 게 맞지만
+생성,수정,삭제할때는 필요한 데이터를 url에 넣으면 안됨! 겉으로 안보이게 해야해!!
+==>> method="post" 해주기-->
+<!--http://localhost:3000/process_create-->
