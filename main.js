@@ -1,3 +1,4 @@
+//1029
 var http = require('http');
 var fs = require('fs');
 var url = require('url'); //url변수를 통해 url이란 모듈을 사용할거야!
@@ -49,7 +50,7 @@ var app = http.createServer(function(request,response){
                 //사용자에게 보여줄 내용 response.end
                 response.end(template);
             }) 
-            
+        
         }
         else{
             fs.readdir('./data', function(error, filelist){
