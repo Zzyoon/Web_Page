@@ -2,7 +2,7 @@
 var http = require('http');
 var fs = require('fs');
 var url = require('url'); //url변수를 통해 url이란 모듈을 사용할거야!
-// var qs = require('querystring');
+var qs = require('querystring');
 
 function templateHTML(title, list, body, control){
     return `
@@ -66,7 +66,11 @@ var app = http.createServer(function(request,response){
                 `<h2>${title}</h2>${description}`, 
                 `<a href="/create">create</a> 
                  <a href="/update?id=${title}">update</a>
-                 <a href="/delete?id=${title}>delete</a>`
+                 <form action="/delete_process" method="post">
+                 <input type="hidden" name="id" value="${title}">
+                 <input type="submit" value="delete">
+                 </form>
+                 `
             );
                 
             response.writeHead(200); //성공
@@ -146,19 +150,32 @@ var app = http.createServer(function(request,response){
             body = body + data;
         }); 
         request.on('end', function(){
-            let post = new URLSearchParams(body);
-            //var post = qs.parse(boby);
+            var post = qs.parse(body);
             var id = post.id;
-            var title = post.get('title');
-            var description = post.get('description');
-            fs.rename(`data/${id}`,`data/${title}`,function(error){
-                fs.writeFile(`data/${title}`, description, 'utf-8', 
-                    function(err){
-                        response.writeHead(302, {location : `/?id=${title}`}); 
-                        response.end();
+            var title = post.title;
+            var description = post.description;
+            fs.rename(`data/${id}`, `data/${title}`, function(error){
+            fs.writeFile(`data/${title}`, description, 'utf8', function(err){
+                response.writeHead(302, {Location: `/?id=${title}`});
+                response.end();
                     });
             })
             console.log(post);
+        });
+    }
+    else if(pathname === '/delete_process'){
+        var body = '';
+        request.on('data', function(data){
+            body = body + data;
+        }); 
+        request.on('end', function(){
+            var post = qs.parse(body);
+            var id = post.id;
+            
+            fs.unlink(`data/${id}`,function(error){
+                response.writeHead(302, {Location: `/`}); //삭제 완료후 홈으로 보내기
+                response.end(); 
+            })
         });
     }
     else{
